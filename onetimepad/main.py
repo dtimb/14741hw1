@@ -26,8 +26,8 @@ conn.close()
 key = bytes.fromhex(key)
 ciphertext = bytes.fromhex(ciphertext)
 
-balls = strxor(key, ciphertext)
+flag = strxor(key, ciphertext)
 
-print(balls)
+print(flag)
 
 #conn.interactive()

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
 from pwn import *
-from Crypto.Util.strxor import strxor
+from Crypto.Util.strxor import *
 import hashlib
 import random
-import time
 
 context.proxy = (socks.SOCKS5, 'localhost', 8123) # SOCKS proxy
 host = '192.168.2.99' # Remote machine name
@@ -13,7 +12,6 @@ conn = remote(host, port)
 
 def generate_hash(username, password):
     username = username.strip(" ")
-    print(username)
     parts = username.split()
     assert len(parts) == 2
     firstname, lastname = parts[0], parts[-1]
@@ -25,15 +23,13 @@ conn.recvuntil(b"Can you crack this hash?\n")
 givenHash = conn.recvline()
 hashstr = givenHash.decode('utf-8').strip()
 
-excelsior = ''
-
 with open("hashcracking/user_list.txt", "r") as f:
     users = [line.strip() for line in f if line.strip()]
 with open("hashcracking/password_list.txt", "r", ) as f:
     passwords = [line.strip() for line in f if line.strip()]
 
 found = False
-
+excelsior = ''
 
 while not found:
     username = random.choice(users)
@@ -41,20 +37,14 @@ while not found:
 
     excelsior = generate_hash(username, password)
 
-    print(excelsior, "----", hashstr)
-
-    if excelsior == givenHash:
+    if excelsior == hashstr:
         found = True
-        print("YIPPEE")
 
+conn.sendline(username)
+conn.sendline(password)
+
+conn.recvline()
+flag = conn.recvline()
+print(flag)
 
 conn.close()
-
-
-#conn.interactive()
-#conn.recvuntil("Can you crack this hash?")
-#balls = conn.recvline()
-
-
-
-
