@@ -12,8 +12,8 @@ def generate_hash(username, password):
 
 def main():
 
-    username = random.choice(open("user_list.txt", "r").read().split("\n"))
-    password = random.choice(open("password_list.txt", "r").read().split("\n"))
+    username = random.choice(open("hashcracking/user_list.txt", "r").read().split("\n"))
+    password = random.choice(open("hashcracking/password_list.txt", "r").read().split("\n"))
 
     hash_to_guess = generate_hash(username, password)
 

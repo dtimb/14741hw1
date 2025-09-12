@@ -22,8 +22,6 @@ def encrypt(m):
 def decrypt(m):
   cipher = AES.new(bytes.fromhex(key), AES.MODE_ECB)
   return (cipher.decrypt(bytes.fromhex(m))).decode('utf-8')
-  
-
 
 # flush output immediately
 print (welcome)
