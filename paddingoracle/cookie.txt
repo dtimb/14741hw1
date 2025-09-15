@@ -1,0 +1,1 @@
+{"username": "john", "is_admin": "false", "expires": "2030-01-01"}

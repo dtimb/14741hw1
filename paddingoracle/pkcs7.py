@@ -1,4 +1,5 @@
 #!/usr/bin/python3 -u
+
 import json
 import sys
 import time
@@ -6,9 +7,9 @@ import random
 
 from Crypto.Cipher import AES
 
-cookiefile = open("cookie.txt", "r").read().strip()
-flag = open("flag.txt", "r").read().strip()
-key = open("key.txt", "r").read().strip()
+cookiefile = open("paddingoracle/cookie.txt", "r").read().strip()
+flag = open("paddingoracle/flag.txt", "r").read().strip()
+key = open("paddingoracle/key.txt", "r").read().strip()
 username = json.loads(cookiefile)["username"]
 
 welcome = "Welcome to Secure Encryption Service version 1.{}".format(random.randint(0,99))
