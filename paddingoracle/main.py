@@ -50,7 +50,10 @@ block5 = givenCookie[128:160]
 block6 = givenCookie[160:192]
 block7 = givenCookie[192:]
 
-print(strxor(IV, block1).decode())
+print(strxor(IV, block1))
+
+
+print(strxor(block1, block2))
 
 """
 print("Given Cookie: ", givenCookie)
@@ -65,7 +68,7 @@ print(block6)
 print(block7)
 """
 
-conn.interactive()
+#conn.interactive()
 
 
 
