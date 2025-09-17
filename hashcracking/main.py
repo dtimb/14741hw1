@@ -21,7 +21,7 @@ def generate_hash(username, password):
 
 conn.recvuntil(b"Can you crack this hash?\n")
 givenHash = conn.recvline()
-hashstr = givenHash.decode('utf-8').strip()
+hashstr = givenHash.decode().strip()
 
 with open("hashcracking/user_list.txt", "r") as f:
     users = [line.strip() for line in f if line.strip()]
