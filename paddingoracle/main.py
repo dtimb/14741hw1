@@ -51,41 +51,42 @@ def enumerate_blocks(b):
     for i, b in enumerate(b):
         print(f"Block {i}: {b}")
 
-plaintext_list = [0] * 16 # create list intended for storage of plaintext
 
-modified_block = bytearray(16) # create emptu byte array for use in byte loop
+for j in range(len(blocks_list)-1, 0, -1):
+    target_block = bytearray.fromhex(blocks_list[j])
+    block = bytearray.fromhex(blocks_list[j-1])
 
-"""
-for c in range(15, -1, -1):
+    modified_block = bytearray(16) # create empty byte array for use in byte loop
+    plaintext = bytearray(16) # create list intended for storage of plaintext
+    temparray = bytearray(16)
 
-    target_block = bytearray.fromhex(blocks_list[c])
-    block = bytearray.fromhex(blocks_list[c-1])
+    for b in range(15,-1,-1):
+        padding = 16 - b
 
+        for c in range(15, b, -1):
+            block_clone[c] = temparray[c] ^ padding
 
-"""
+        # iterates through every possible byte until correct padding is found
+        for i in range(256):
+            conn = process(["python3", "paddingoracle/pkcs7.py"]) # re-opens process every time iterated
 
-target_block = bytearray.fromhex(blocks_list[5])
-block = bytearray.fromhex(blocks_list[4])
+            block_clone = block[:] # create a copy of original block [c-1]
+            block_clone[b] = i # changes (last) byte of block
+            guess = bytes(block_clone) + bytes(target_block) # concatenate block w/ guessed byte & target block that is being solved for
+        
+            conn.sendline(binascii.hexlify(guess)) # sends guess to server after converting to hex
+            response = conn.clean().decode().strip() # captures server response to meet conditional that either ends loop or continues
 
-# iterates through every possible byte until correct padding is found
-for i in range(256):
-    conn = process(["python3", "paddingoracle/pkcs7.py"]) # re-opens process every time iterated
+            # restarts above loop if "invalid padding" received
+            if "invalid padding" in response: 
+                conn.close() # close connection to prevent too many processes / connections being open at once before re-opening as loop continues
+                continue
 
-    block_clone = block[:] # create a copy of original block [c-1]
-    block_clone[-1] = i # changes (last) byte of block
-    guess = bytes(block_clone) + bytes(target_block) # concatenate block w/ guessed byte & target block that is being solved for
-    
-    conn.sendline(binascii.hexlify(guess)) # sends guess to server after converting to hex
-    response = conn.clean().decode().strip() # captures server response to meet conditional that either ends loop or continues
-
-    # restarts above loop if "invalid padding" received
-    if "invalid padding" in response: 
-        conn.close() # close connection to prevent too many processes / connections being open at once before re-opening as loop continues
-        continue
-
-    # if "invalid padding" is never received, break from loop and store new plaintext byte
-    modified_block[-1] = (i ^ 0x1) ^ (block[-1]) # creates the correct modified block to be used in plaintext (ex. ""...\x01")
-    break
-
+            # if "invalid padding" is never received, break from loop and store new plaintext byte
+            conn.close() # close connection
+            temparray[b] = i ^ padding
+            plaintext[b] = (i ^ padding) ^ (block[b]) # creates the correct modified block to be used in plaintext (ex. ""...\x01")
+            print(plaintext)
+            break
 
 
