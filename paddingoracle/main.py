@@ -66,7 +66,6 @@ for j in range(len(blocks_list)-1, 0, -1):
         for c in range(15, b, -1):
             block_clone[c] = temparray[c] ^ padding
 
-        # iterates through every possible byte until correct padding is found
         for i in range(256):
             conn = process(["python3", "paddingoracle/pkcs7.py"]) # re-opens process every time iterated
 
@@ -75,18 +74,18 @@ for j in range(len(blocks_list)-1, 0, -1):
             guess = bytes(block_clone) + bytes(target_block) # concatenate block w/ guessed byte & target block that is being solved for
         
             conn.sendline(binascii.hexlify(guess)) # sends guess to server after converting to hex
-            response = conn.clean().decode().strip() # captures server response to meet conditional that either ends loop or continues
+            response = conn.clean().decode().strip() # captures server response to meet conditional that either ends loop or continue
 
-            # restarts above loop if "invalid padding" received
             if "invalid padding" in response: 
                 conn.close() # close connection to prevent too many processes / connections being open at once before re-opening as loop continues
                 continue
-
-            # if "invalid padding" is never received, break from loop and store new plaintext byte
+            
             conn.close() # close connection
+
             temparray[b] = i ^ padding
-            plaintext[b] = (i ^ padding) ^ (block[b]) # creates the correct modified block to be used in plaintext (ex. ""...\x01")
-            print(plaintext)
+            modified_block[b] = (i ^ padding) ^ (block[b]) # creates the correct modified block to be used in plaintext (ex. ""...\x01")
+            plaintext[b] = i ^ block[b]
+            print(modified_block)
             break
 
 
