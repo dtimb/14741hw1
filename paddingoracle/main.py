@@ -71,11 +71,19 @@ for j in range(len(blocks_list)-1, 0, -1):
 
         # iterates through every possible byte until correct padding is found
         for i in range(256):
-            time.sleep(0.1)
-            conn = remote(host, port) # re-opens process every time iterated
+            #time.sleep(0.001)
+            #conn = remote(host, port) # re-opens process every time iterated
 
 
-            conn.recvline()
+            
+            try: 
+                conn = remote(host, port)
+                conn.recvline()
+            except EOFError:
+                print("EOFError")
+                conn.close()
+                time.sleep(0.001)
+                continue
 
             
             block_clone = block[:] # create a copy of original block [c-1]

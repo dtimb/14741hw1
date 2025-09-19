@@ -15,19 +15,19 @@ from datetime import datetime
 context.log_level = "critical" # hides non-critical pwntools errors i.e. JSON errors in this case (meant for clean terminal)
 
 # interact w/ socket
-
+'''
 context.proxy = (socks.SOCKS5, 'localhost', 8123) # SOCKS proxy
 host = '192.168.2.99' # Remote machine name
 port = 64822 # Remote port
 conn = remote(host, port)
-
+'''
 #content = conn.recv(1024)
 #print(content)
 #print(conn)
 #conn.interactive()
 
 # interact w/ local script
-#conn = process(["python3", "paddingoracle/pkcs7.py"])
+conn = process(["python3", "paddingoracle/pkcs7.py"])
 #content = conn.recv(1024)
 #print(content)
 
@@ -71,9 +71,9 @@ for j in range(len(blocks_list)-1, 0, -1):
 
         # iterates through every possible byte until correct padding is found
         for i in range(256):
-            time.sleep(0.1)
-            conn = remote(host, port) # re-opens process every time iterated
-
+            #time.sleep(0.05)
+            conn = process(["python3", "paddingoracle/pkcs7.py"]) # re-opens process every time iterated
+            
 
             conn.recvline()
 
@@ -115,7 +115,7 @@ print("End: ", datetime.now())
 
 conn.close()
 
-conn = remote(host, port)
+conn = process(["python3", "paddingoracle/pkcs7.py"])
 
 conn.recvuntil(b"Here is a sample cookie: ")
 
