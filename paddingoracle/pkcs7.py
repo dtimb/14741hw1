@@ -43,6 +43,8 @@ cookie2 = sys.stdin.readline()
 # decrypt, but remove the trailing newline first
 cookie2decoded = decrypt(cookie2[:-1])
 
+print("cookie2decoded: ", cookie2decoded)
+
 if isvalidpad(cookie2decoded):
   d=json.loads(unpad(cookie2decoded).decode('utf-8'))
   print ("username: " + d["username"])

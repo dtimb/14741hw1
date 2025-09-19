@@ -10,24 +10,25 @@ conn = remote(host, port)
 content = conn.recv(1024)
 
 conn.sendline(b'1')
-conn.sendline((b'\x00'*34).decode('latin-1'))
+conn.sendline((b'\x00'*34).decode())
 
 conn.recvuntil("Your encrypted message is  ")
-
-key = conn.recvline()[:-1].decode()
+ciphertext = conn.recvline()[:-1].decode()
 
 conn.sendline(b'2')
 conn.recvuntil("0 : ")
 
-ciphertext = conn.recvline()[:-1].decode()
+ciphertext2 = conn.recvline()[:-1].decode()
 
 conn.close()
 
-key = bytes.fromhex(key)
 ciphertext = bytes.fromhex(ciphertext)
+ciphertext2 = bytes.fromhex(ciphertext2)
 
-flag = strxor(key, ciphertext)
+#print(ciphertext)
+#print(ciphertext2)
+
+flag = strxor(ciphertext, ciphertext2)
 
 print(flag)
 
-#conn.interactive()
